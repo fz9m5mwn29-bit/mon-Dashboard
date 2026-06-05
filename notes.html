@@ -80,23 +80,28 @@ p {
   <script>
 let notes = JSON.parse(localStorage.getItem('notes')) || []; // Récupérer les notes existantes
 
+function creerLi(note) {
+       const li = document.createElement('li');
+li.innerHTML = '<strong>' + note.title + '</strong>: ' + note.content;
+let bouton = document.createElement('button');
+bouton.innerHTML = '❌';
+bouton.onclick = function() {
+    notes = notes.filter(n => n !== note);
+    localStorage.setItem('notes', JSON.stringify(notes));
+    li.remove();
+};
+li.appendChild(bouton);
+return li;
+    }
+
 window.onload = function() {
-      // Afficher les notes existantes sur la page
       const notesList = document.getElementById('notesList');
       notes.forEach(function(note) {
-        const li = document.createElement('li');
-        li.innerHTML = '<strong>' + note.title + '</strong>: ' + note.content;
-        let bouton = document.createElement('button');
-bouton.innerHTML = '❌';
-      bouton.onclick = function() {
-        notes = notes.filter(n => n !== note);
-        localStorage.setItem('notes', JSON.stringify(notes));
-        li.remove();  
-        };
-        li.appendChild(bouton);
+        const li = creerLi(note);
         notesList.appendChild(li);
       });
     };
+
     function addNote() {
       const title = document.getElementById('noteInput').value;
       const content = document.getElementById('noteContent').value;
@@ -104,17 +109,8 @@ bouton.innerHTML = '❌';
         const note = { title: title, content: content };
         notes.push(note); // Ajouter la nouvelle note à la liste
         localStorage.setItem('notes', JSON.stringify(notes)); // Mettre à jour localStorage
-        const li = document.createElement('li');
-li.innerHTML = '<strong>' + note.title + '</strong>: ' + note.content;
-let bouton = document.createElement('button');
-bouton.innerHTML = '❌';
-      bouton.onclick = function() {
-        notes = notes.filter(n => n !== note);
-        localStorage.setItem('notes', JSON.stringify(notes));
-        li.remove();
-      };
-      li.appendChild(bouton);
-      notesList.appendChild(li);
+        const li = creerLi(note);
+        notesList.appendChild(li);
       document.getElementById('noteInput').value = '';
       document.getElementById('noteContent').value = '';
         console.log('Note ajoutée :', note);
