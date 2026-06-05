@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+body { 
+  background-image: url(postit.jpg);
+    background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+input, textarea {
+  width: 300px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #0056b3;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+ul li {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ul li button {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 16px;
+  cursor: pointer;
+}
+ul li button:hover {    
+  color: darkred;   
+}
+    
+.container {
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+        flex-direction: column;
+        align-items: center;
+      max-width: 600px;
+      margin: 60px auto; 
+}
+
+h1 {
+      text-shadow: 2px 2px 8px black;
+      color: white;
+    }
+    
+p {
+      color: white;
+      text-shadow: 1px 1px 5px black;
+ }     
+
+  </style>
+  <script>
+let notes = JSON.parse(localStorage.getItem('notes')) || []; // Récupérer les notes existantes
+
+window.onload = function() {
+      // Afficher les notes existantes sur la page
+      const notesList = document.getElementById('notesList');
+      notes.forEach(function(note) {
+        const li = document.createElement('li');
+        li.innerHTML = '<strong>' + note.title + '</strong>: ' + note.content;
+        let bouton = document.createElement('button');
+bouton.innerHTML = '❌';
+      bouton.onclick = function() {
+        notes = notes.filter(n => n !== note);
+        localStorage.setItem('notes', JSON.stringify(notes));
+        li.remove();  
+        };
+        li.appendChild(bouton);
+        notesList.appendChild(li);
+      });
+    };
+    function addNote() {
+      const title = document.getElementById('noteInput').value;
+      const content = document.getElementById('noteContent').value;
+      if (title && content) {
+        const note = { title: title, content: content };
+        notes.push(note); // Ajouter la nouvelle note à la liste
+        localStorage.setItem('notes', JSON.stringify(notes)); // Mettre à jour localStorage
+        const li = document.createElement('li');
+li.innerHTML = '<strong>' + note.title + '</strong>: ' + note.content;
+let bouton = document.createElement('button');
+bouton.innerHTML = '❌';
+      bouton.onclick = function() {
+        notes = notes.filter(n => n !== note);
+        localStorage.setItem('notes', JSON.stringify(notes));
+        li.remove();
+      };
+      li.appendChild(bouton);
+      notesList.appendChild(li);
+      document.getElementById('noteInput').value = '';
+      document.getElementById('noteContent').value = '';
+        console.log('Note ajoutée :', note);
+        // Vous pouvez également ajouter du code pour afficher les notes sur la page
+      } 
+    }
+  </script>
+</head>
+<body> 
+    <div class="container">
+    <h1>Notes</h1>
+    <p>Voici l'espace pour inserer vos idees et textes :</p>
+    <input type="text" id="noteInput" placeholder="Titre de la note ici...">
+    <textarea id="noteContent" placeholder="Contenu de la note ici..."></textarea>
+    <button onclick="addNote()">Ajouter la note</button>
+    <ul id="notesList"></ul>
+    </div>
+</body>
+</html>
