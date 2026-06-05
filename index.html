@@ -39,7 +39,20 @@
       font-weight: bold;
       text-shadow: 2px 2px 8px black;
     }
-
+    #temperature {
+        position: absolute;
+        top : 110px;
+        right: 10px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 30px;
+    }
+    #temps {
+        position: absolute;
+        top : 150px;
+        right: 10px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 30px;
+    }
     .container {
       max-width: 600px;
       margin: 60px auto;
@@ -115,7 +128,31 @@
         };
         item.appendChild(bouton);
         liste.appendChild(item);
-      });
+        });
+    
+         fetch('https://api.open-meteo.com/v1/forecast?latitude=49.1&longitude=6.16&current_weather=true')
+        .then(response => response.json())
+        .then(data => {
+            // temperature toujours affiché
+            // weathercode toujours affiché
+            let description = '';
+            const code = data.current_weather.weathercode;
+            if (code === 0) {
+              description = 'Ciel bleu ☀️';
+            } else if (code === 1 || code === 2 || code === 3) {
+              description = 'Nuageux ⛅️';
+            } else if (code === 61 || code === 63 || code === 65) {
+              description = 'Pluie 🌧️';
+            } else if (code === 71 || code === 73 || code === 75) {
+              description = 'Neige ❄️';
+            } else if (code === 95) {
+              description = 'Orage ⚡️';
+            } else {
+              description = 'Inconnu';
+            }
+            document.getElementById('temperature').innerText = data.current_weather.temperature + '°C';
+            document.getElementById('temps').innerText = description;
+        });
     }
 
     function ajouterTache() {
@@ -147,7 +184,7 @@
     }
 
     setInterval(mettreAJourHorloge, 1000);
-  </script>
+</script>
 </head>
 <body>
 
@@ -162,6 +199,9 @@
   </nav>
 
   <div id="horloge"></div>
+
+  <p id="temperature"></p>
+  <p id="temps"></p>
 
   <div class="container">
     <h1>✅ Mes tâches</h1>
